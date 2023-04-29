@@ -1,0 +1,35 @@
+name = "ostree-demo"
+
+description = ""
+version = "0.0.1"
+modules = []
+groups = []
+
+
+# troubleshooting tools
+
+[[packages]]
+name = "iputils"
+version = "*"
+
+[[packages]]
+name = "bind-utils"
+version = "*"
+
+[[packages]]
+name = "net-tools"
+version = "*"
+
+# other packages
+
+[[packages]]
+name = "zsh"
+version = "*"
+
+[[customizations.user]]
+ name = "root"
+ description = "root"
+ password = "$6$Or8vUqYX4L8522pH$5ZIciWzADEWocS0Uh0OaeHrumUg9z/L3WKB4xdUEz4F9O9CKN1SsSXajeb.EwIzWDPbIHsdP8uAsKVZkVF0Xe."
+ home = "/home/root/"
+ shell = "/usr/bin/bash"
+ groups = ["root"]
