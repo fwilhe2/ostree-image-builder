@@ -17,6 +17,37 @@ composer-cli compose start ostree-demo iot-commit
 composer-cli compose start ostree-demo iot-container
 
 composer-cli status show
+
+sudo composer-cli compose types
+```
+
+Build a disk image:
+
+```
+composer-cli blueprints push blueprint.toml
+composer-cli blueprints list
+
+OSTREE_REF=main
+repo_url=http://0.0.0.0:8000/
+blueprint_name=ostree-demo
+
+sudo composer-cli --json compose start-ostree --ref "$OSTREE_REF" "$blueprint_name" iot-commit
+
+sudo composer-cli compose list
+UUID=#.. id from the list ..
+
+sudo composer-cli compose results $UUID
+
+sudo tar xf $UUID.tar
+sudo tar xf $UUID-commit.tar
+cd repo
+sudo python -m http.server
+
+sudo composer-cli --json compose start-ostree --ref "$OSTREE_REF" --url "$repo_url" "$blueprint_name" iot-raw-image
+
+sudo composer-cli compose list
+UUID_RAW=#.. id from the list ..
+sudo composer-cli compose results $UUID_RAW
 ```
 
 ## References
