@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Florian Wilhelm
+# SPDX-License-Identifier: Apache-2.0
+
+# Based on the examples by Akihiro Suda and the lima contributors, see https://github.com/lima-vm/lima, distributed under Apache-2.0 license
+
+images:
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2"
+  arch: "x86_64"
+  digest: "sha256:d334670401ff3d5b4129fcc662cf64f5a6e568228af59076cc449a4945318482"
+- location: "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/aarch64/images/Fedora-Cloud-Base-38-1.6.aarch64.qcow2"
+  arch: "aarch64"
+  digest: "sha256:ad71d22104a16e4f9efa93e61e8c7bce28de693f59c802586abbe85e9db55a65"
+mounts:
+- location: "~"
+- location: "/tmp/lima"
+  writable: true
+
+provision:
+- mode: system
+  script: |
+    #!/bin/bash
+    set -eux -o pipefail
+    dnf -y install git
+
+    dnf -y install firewalld
+    systemctl start firewalld
+    firewall-cmd --add-service=cockpit
+    firewall-cmd --add-service=cockpit --permanent
+
+    dnf -y install osbuild-composer composer-cli cockpit-composer
+    dnf -y install podman virt-install libvirt
+    systemctl enable --now cockpit.socket
+
+    systemctl enable --now osbuild-composer.socket
+    systemctl enable --now libvirtd
+
+- mode: user
+  script: |
+    #!/bin/bash
+    set -eux -o pipefail
+    curl https://raw.githubusercontent.com/fwilhe2/lima-vms/main/provision.sh | bash
+    if [ ! -d ~/ostree-image-builder ]
+    then
+      git clone https://github.com/fwilhe2/ostree-image-builder ~/ostree-image-builder
+    else
+      echo Local checkout already exists
+    fi
+
+portForwards:
+- guestPort: 9090
+  hostIP: "0.0.0.0"
+- guestPort: 8080
+  hostIP: "0.0.0.0"
+
+containerd:
+  system: false
+  user: false

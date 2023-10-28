@@ -1,7 +1,8 @@
 # OSTree Image Builder
 
 ```
-vagrant up
+limactl create --name ostree-dev ostree-dev.yaml
+limactl start ostree-dev
 ```
 
 https://localhost:9090/composer
