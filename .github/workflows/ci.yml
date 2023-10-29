@@ -13,5 +13,6 @@ jobs:
     - name: Build
       run: |
         dnf -y install osbuild-composer composer-cli
+        systemctl start osbuild-composer.socket
         composer-cli blueprints push blueprint.toml
         composer-cli blueprints list
