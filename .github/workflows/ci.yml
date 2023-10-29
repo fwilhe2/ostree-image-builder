@@ -1,0 +1,17 @@
+name: CI
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:38
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: |
+        dnf -y install osbuild-composer composer-cli
+        composer-cli blueprints push blueprint.toml
+        composer-cli blueprints list
