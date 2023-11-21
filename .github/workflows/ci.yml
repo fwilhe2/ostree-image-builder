@@ -6,14 +6,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      osbuild-composer:
+        image: ghcr.io/osbuild/osbuild-composer-container:fedora-38
+        volumes:
+          - /builds:/builds
+        options: --privileged
     container:
-      image: fedora:39
-      options: --privileged
+      image: ghcr.io/osbuild/osbuild-composer-container:fedora-38
+      volumes:
+        - /builds:/builds
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: |
-        dnf -y install osbuild-composer composer-cli
-        # systemctl start osbuild-composer.socket
+        sleep 5
+        tail --follow --lines +1 "/builds/osbuild-composer-journal.txt" &
+        composer-cli() { /usr/bin/composer-cli --socket /builds/weldr-api.socket "$@"; }
         composer-cli blueprints push blueprint.toml
         composer-cli blueprints list
