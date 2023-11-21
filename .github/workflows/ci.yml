@@ -7,13 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: fedora:38
+      image: fedora:39
       options: --privileged
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: |
         dnf -y install osbuild-composer composer-cli
-        systemctl start osbuild-composer.socket
+        # systemctl start osbuild-composer.socket
         composer-cli blueprints push blueprint.toml
         composer-cli blueprints list
